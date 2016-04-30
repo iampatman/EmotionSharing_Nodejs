@@ -1,14 +1,20 @@
-var connect = require('connect');
-var http = require('http');
+var express = require('express');
+var app = express();
 
-var app = connect();
+app.set('port', (process.env.PORT || 5000));
 
-// respond to all requests
-app.use(function(req, res){
-  res.end('Hello from Connect!\n');
-  console.log('request received')
+app.use(express.static(__dirname + '/public'));
+
+// views is directory for all template files
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+
+app.get('/', function(request, response) {
+	console.log('ok')
+	response.send('Hello World 2!');
+
 });
 
-//create node.js http server and listen on port
-http.createServer(app).listen(process.env.PORT || 3000);
-
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
