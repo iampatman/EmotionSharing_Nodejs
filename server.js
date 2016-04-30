@@ -1,34 +1,27 @@
-var express = require('express');
-var app = express();
-var fs = require("fs");
+var connect = require('connect');
+var http = require('http');
 
-var user = {
-   "user4" : {
-      "name" : "mohit",
-      "password" : "password4",
-      "profession" : "teacher",
-      "id": 4
-   }
-}
+var app = connect();
 
-app.get('/addUser', function (req, res) {
-   // First read existing users.
-   console.log('aaaaa')
+// gzip/deflate outgoing responses
+var compression = require('compression');
+app.use(compression());
 
-})
+// store session state in browser cookie
+var cookieSession = require('cookie-session');
+app.use(cookieSession({
+    keys: ['secret1', 'secret2']
+}));
 
-app.get('/listUsers', function (req, res) {
-   fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-       console.log( data );
-       res.end( data );
-   });
-})
+// parse urlencoded request bodies into req.body
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded());
 
+// respond to all requests
+app.use(function(req, res){
+  res.end('Hello from Connect!\n');
+  console.log('request received')
+});
 
-var server = app.listen(8081, function () {
-
-  var host = server.address().address
-  var port = server.address().port
-  console.log("Example app listening at http://%s:%s", host, port)
-
-})
+//create node.js http server and listen on port
+http.createServer(app).listen(3000);
