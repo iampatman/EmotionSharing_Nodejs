@@ -155,7 +155,7 @@ app.get('/cleanupDB', function(request, response) {
 		});
 	});
 	response.end("1");
-}
+})
 //Haijun: Create DB 
 function db_addUser() {
 	
