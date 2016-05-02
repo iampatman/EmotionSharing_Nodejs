@@ -100,35 +100,35 @@ app.get('/cleardata', function(request, response) {
 });
 
 //Haijun: Create DB table executions. for internel usage only!!!
-app.post('/setupDB', function(request, response)) {
+app.post('/setupDB', function(request, response) {
 	//make sure connection could be touched
 	pg.connect(process.env.DATABASE_URL, function(err0, client) {
 		if(err0) {
 			console.log('Connection Error: ' + error.message);
-			response.end("0")
+			response.end("0");
 			return;
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('CREATE TABLE users (username integer, mobilePhone text)', function(err, result) {
+		client.query('CREATE TABLE users (username integer, mobilePhone text)', function(err1, result) {
 		  done();
-		  if (err)
-		   { console.error(err); response.send("Error " + err); }
+		  if (err1)
+		   { console.error(err1); response.send("Error " + err1); }
 		  else
 		   { console.log('User table created!!!') }
 		});
 		//Create activities table
 		client.query('CREATE TABLE activities (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
-		function(err, result) {
+		function(err2, result) {
 		  done();
-		  if (err)
-		   { console.error(err); response.send("Error " + err); }
+		  if (err2)
+		   { console.error(err2); response.send("Error " + err2); }
 		  else
 		   { console.log('activities table created!!!') }
 		});
 	});
-	response.end("1")
-}  
+	response.end("1");
+}) 
   
 //Haijun: Create DB 
 function db_addUser() {
