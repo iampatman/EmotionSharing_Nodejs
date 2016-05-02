@@ -19,6 +19,8 @@ var listUsers = []
 
 var activities = []
 
+var clientConn = null
+
 function arrayContains(array, item){
 	//console.log(array.length)
 
@@ -159,9 +161,19 @@ app.get('/cleanupDB', function(request, response) {
 	});
 	response.end("1");
 })
+
 //Haijun: Create DB 
-function db_addUser() {
-	
+function db_addUser(newUser) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+  if (err) throw err;
+  console.log('Connected to postgres! Getting schemas...');
+
+  client
+    .query('SELECT table_schema,table_name FROM information_schema.tables;')
+    .on('row', function(row) {
+      console.log(JSON.stringify(row));
+    });
+});
 }
 
 //Haijun: get a list of all users
@@ -207,8 +219,6 @@ function writeToFile(filename, data){
 	});
 }
 
-
-
 //Run web server
 
 app.listen(app.get('port'), function() {
@@ -224,6 +234,21 @@ app.listen(app.get('port'), function() {
 
 
 	activities = []
+	
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');
+		clientConn = client;
+	})
+
+	var post  = {username: 1, mobilePhone: '13120862631'};
+	var query = clientConn.query('INSERT INTO t_user SET ?', post, function(err, result) {
+	    if (error) {  console.log('Insert data Error: ' + err.message);          } 
+		console.log("Insert data succeed")
+	});
+	console.log(query.sql);
+	
+	clientConn.end()
 /*
 	fs.readFile( __dirname + "/" + "activities.json", 'utf8', function (err, data) {
 		console.log( data );
