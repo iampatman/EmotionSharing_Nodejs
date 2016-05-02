@@ -241,7 +241,7 @@ app.listen(app.get('port'), function() {
 		var queryText = 'INSERT INTO t_users(username, mobilePhone) VALUES($1, $2) RETURNING id'
 		
 		client.query(queryText, ['841l14yah', 'test@te.st'], function(err, result) {
-			if(err) //handle error
+			if(err) {console.log("error!");}//handle error
 		  else {
 			var newlyCreatedUserId = result.rows[0].id;
 		  }
