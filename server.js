@@ -245,7 +245,7 @@ app.listen(app.get('port'), function() {
 		});
 		console.log(query.sql);
 		
-		clientConn.end()
+		client.end()
 	})
 
 
