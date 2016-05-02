@@ -110,7 +110,7 @@ app.get('/setupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('CREATE TABLE users (username integer, mobilePhone text)', function(err1, result) {
+		client.query('CREATE TABLE t_user (username integer, mobilePhone text)', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0")}
 		  else
@@ -118,9 +118,8 @@ app.get('/setupDB', function(request, response) {
 		});
 		/*
 		//Create activities table
-		client.query('CREATE TABLE activities (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
+		client.query('CREATE TABLE t_activity (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
 		function(err2, result) {
-		  done();
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
@@ -130,7 +129,33 @@ app.get('/setupDB', function(request, response) {
 	});
 	response.end("1");
 }) 
-  
+ 
+ //Haijun: Create DB table executions. for internel usage only!!!
+app.get('/cleanupDB', function(request, response) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if(err) {
+			console.log('Connection Error: ' + err.message);
+			response.end("0");
+			return;
+		}
+		console.log('Connected to postgres! Getting schemas...');
+		//Create user table
+		client.query('delete from t_user', function(err1, result) {
+		  if (err1)
+		   { console.error(err1); response.send("Error " + err1); response.end("0")}
+		  else
+		   { console.log('User table deleted!!!') }
+		});
+		//Create activities table
+		client.query('delete from t_activity', function(err2, result) {
+		  if (err2)
+		   { console.error(err2); response.send("Error " + err2); }
+		  else
+		   { console.log('activities table deleted!!!') }
+		});
+	});
+	response.end("1");
+}
 //Haijun: Create DB 
 function db_addUser() {
 	
