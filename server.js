@@ -233,12 +233,12 @@ app.listen(app.get('port'), function() {
 	activities = []
 	//haijun: ------------
 	//build connection with DB
-	dbClient = new pg.Client(connStr);
-	dbClient.connect(connStr, function(err, client) {
-		if (err) throw err;
-		console.log('Connected to postgres! Getting schemas...');		
-	});
-	
+	//dbClient = new pg.Client(connStr);
+	//dbClient.connect(/*function(err, client) {
+	//	if (err) throw err;
+	//	console.log('Connected to postgres! Getting schemas...');		
+	//}*/);
+	/*
 	//load all users and activities
 	console.log("load all users")
     var queryUser = dbClient.query("SELECT * FROM t_user");
@@ -261,8 +261,18 @@ app.listen(app.get('port'), function() {
     });
 	
 	dbClient.end();
-	
-	/*
+	*/
+
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');
+		var queryText = 'SELECT * FROM t_user'
+		
+		client.query(queryText).on('row', function(row) {
+			console.log(JSON.stringify(row));
+		});
+	})
+/*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
