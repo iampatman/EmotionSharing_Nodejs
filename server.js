@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var fs = require("fs");
 var pg = require('pg');
-var  = process.env.DATABASE_URL;
+var connStr = process.env.DATABASE_URL;
 //define web server
 var app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -12,8 +12,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-
-
 
 var listUsers = []
 
@@ -235,7 +233,7 @@ app.listen(app.get('port'), function() {
 	activities = []
 	//haijun: ------------
 	//build connection with DB
-	dbConn = new pg.Client(connectionString);
+	dbConn = new pg.Client(connStr);
 	dbConn.connect(function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');		
