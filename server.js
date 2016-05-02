@@ -238,17 +238,17 @@ app.listen(app.get('port'), function() {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
-		clientConn = client;
+		var post  = {username: 1, mobilePhone: '13120862631'};
+		var query = clientConn.query('INSERT INTO t_user SET ?', post, function(err, result) {
+			if (err) {  console.log('Insert data Error: ' + err.message);  } else {console.log("Insert data succeed")}
+			
+		});
+		console.log(query.sql);
+		
+		clientConn.end()
 	})
 
-	var post  = {username: 1, mobilePhone: '13120862631'};
-	var query = clientConn.query('INSERT INTO t_user SET ?', post, function(err, result) {
-	    /*if (err) {  console.log('Insert data Error: ' + err.message);          } 
-		console.log("Insert data succeed")*/
-	});
-	console.log(query.sql);
-	
-	clientConn.end()
+
 /*
 	fs.readFile( __dirname + "/" + "activities.json", 'utf8', function (err, data) {
 		console.log( data );
