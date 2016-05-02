@@ -104,7 +104,7 @@ app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
 	pg.connect(process.env.DATABASE_URL, function(err0, client) {
 		if(err0) {
-			console.log('Connection Error: ' + error.message);
+			console.log('Connection Error: ' + err0.message);
 			response.end("0");
 			return;
 		}
