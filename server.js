@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var fs = require("fs");
 var pg = require('pg');
-
+var  = process.env.DATABASE_URL || 'postgres://localhost:5000/';
 //define web server
 var app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -19,7 +19,7 @@ var listUsers = []
 
 var activities = []
 
-var clientConn = null
+var dbConn = null
 
 function arrayContains(array, item){
 	//console.log(array.length)
@@ -118,7 +118,7 @@ app.get('/setupDB', function(request, response) {
 		  else
 		   { console.log('User table created!!!') }
 		});
-		/*
+		
 		//Create activities table
 		client.query('CREATE TABLE t_activity (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
 		function(err2, result) {
@@ -126,7 +126,7 @@ app.get('/setupDB', function(request, response) {
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
 		   { console.log('activities table created!!!') }
-		}); */
+		}); 
 		client.end()
 	});
 	response.end("1");
@@ -148,14 +148,13 @@ app.get('/cleanupDB', function(request, response) {
 		  else
 		   { console.log('User table deleted!!!') }
 		});
-		/*
 		//Create activities table
 		client.query('DROP TABLE t_activity', function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
 		   { console.log('activities table deleted!!!') }
-		});*/
+		});
 		client.end()
 
 	});
@@ -234,7 +233,35 @@ app.listen(app.get('port'), function() {
 
 
 	activities = []
+//haijun: ------------
+	//build connection with DB
+	dbConn = new pg.Client(connectionString);
+	dbConn.connect(function(err, client) {
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');		
+	});
 	
+	//load all users and activities
+    var queryUser = client.query("SELECT * FROM t_user");
+    queryUser.on('row', function(row) {
+		listUsers.push(JSON.stringify(row))
+    });
+
+	var queryActi = client.query("SELECT * FROM t_activity");
+	queryActi.on('row', function(row) {
+		var activity = {
+			location: {longitude: row.longitude, latitude: row.latitude},
+			time: row.time,
+			username: row.username,
+			emotionId: row.emotionId,
+			thought: row.thought
+		}
+		activities.push(activity)
+    });
+	
+	dbConn.end();
+	
+	/*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
@@ -246,7 +273,7 @@ app.listen(app.get('port'), function() {
 			var newlyCreatedUserId = 0
 		  }
 		});
-	})
+	})*/
 
 
 /*
