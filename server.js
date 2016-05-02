@@ -242,15 +242,13 @@ app.listen(app.get('port'), function() {
 	})
 
 	var post  = {username: 1, mobilePhone: '13120862631'};
-	/*
 	var query = clientConn.query('INSERT INTO t_user SET ?', post, function(err, result) {
-	    if (err) {  console.log('Insert data Error: ' + err.message);          } 
-		console.log("Insert data succeed")
+	    /*if (err) {  console.log('Insert data Error: ' + err.message);          } 
+		console.log("Insert data succeed")*/
 	});
 	console.log(query.sql);
 	
 	clientConn.end()
-	*/
 /*
 	fs.readFile( __dirname + "/" + "activities.json", 'utf8', function (err, data) {
 		console.log( data );
