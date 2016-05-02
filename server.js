@@ -233,20 +233,20 @@ app.listen(app.get('port'), function() {
 	activities = []
 	//haijun: ------------
 	//build connection with DB
-	dbConn = new pg.Client(connStr);
-	dbConn.connect(function(err, client) {
+	dbClient = new pg.Client(connStr);
+	dbClient.connect(function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');		
 	});
 	
 	//load all users and activities
-    var queryUser = client.query("SELECT * FROM t_user");
+    var queryUser = dbClient.query("SELECT * FROM t_user");
     queryUser.on('row', function(row) {
 		listUsers.push(JSON.stringify(row))
 		console.log("User table is loading " + row.username)
     });
 
-	var queryActi = client.query("SELECT * FROM t_activity");
+	var queryActi = dbClient.query("SELECT * FROM t_activity");
 	queryActi.on('row', function(row) {
 		var activity = {
 			location: {longitude: row.longitude, latitude: row.latitude},
@@ -259,7 +259,7 @@ app.listen(app.get('port'), function() {
 		console.log("Activity table is loading " + row.username)
     });
 	
-	dbConn.end();
+	dbClient.end();
 	
 	/*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
