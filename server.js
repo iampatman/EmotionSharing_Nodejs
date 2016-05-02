@@ -239,7 +239,7 @@ app.listen(app.get('port'), function() {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
 		var post  = {username: '1', mobilePhone: '13120862631'};
-		var query = client.query('INSERT INTO t_user values ?', post, function(err, result) {
+		var query = client.query('INSERT INTO t_user(username, mobilePhone) values($1, $2)', [post.username, post.mobilePhone], function(err, result) {
 			if (err) {  console.log('Insert data Error: ' + err.message);  } else {console.log("Insert data succeed")}
 			
 		});
