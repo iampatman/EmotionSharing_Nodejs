@@ -102,7 +102,7 @@ app.get('/cleardata', function(request, response) {
 //Haijun: Create DB table executions. for internel usage only!!!
 app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
-	pg.connect(process.env.DATABASE_URL, function(err0, client) {
+	pg.connect(process.env.DATABASE_URL, function(err0, client, done) {
 		if(err0) {
 			console.log('Connection Error: ' + err0.message);
 			response.end("0");
