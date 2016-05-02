@@ -102,9 +102,9 @@ app.get('/cleardata', function(request, response) {
 //Haijun: Create DB table executions. for internel usage only!!!
 app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
-	pg.connect(process.env.DATABASE_URL, function(err0, client, done) {
-		if(err0) {
-			console.log('Connection Error: ' + err0.message);
+	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+		if(err) {
+			console.log('Connection Error: ' + err.message);
 			response.end("0");
 			return;
 		}
@@ -117,6 +117,7 @@ app.get('/setupDB', function(request, response) {
 		  else
 		   { console.log('User table created!!!') }
 		});
+		/*
 		//Create activities table
 		client.query('CREATE TABLE activities (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
 		function(err2, result) {
@@ -126,6 +127,7 @@ app.get('/setupDB', function(request, response) {
 		  else
 		   { console.log('activities table created!!!') }
 		});
+		*/
 	});
 	response.end("1");
 }) 
