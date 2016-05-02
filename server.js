@@ -112,7 +112,7 @@ app.get('/setupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('CREATE TABLE t_user (username integer, mobilePhone text)', function(err1, result) {
+		client.query('CREATE TABLE t_user (username text, mobilePhone text)', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0"); }
 		  else
@@ -142,7 +142,7 @@ app.get('/cleanupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('delete from t_user', function(err1, result) {
+		client.query('DROP TABLE t_user', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0"); }
 		  else
@@ -150,7 +150,7 @@ app.get('/cleanupDB', function(request, response) {
 		});
 		/*
 		//Create activities table
-		client.query('delete from t_activity', function(err2, result) {
+		client.query('DROP TABLE t_activity', function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
@@ -238,7 +238,7 @@ app.listen(app.get('port'), function() {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
-		var post  = {username: 1, mobilePhone: '13120862631'};
+		var post  = {username: '1', mobilePhone: '13120862631'};
 		var query = client.query('INSERT INTO t_user SET ?', post, function(err, result) {
 			if (err) {  console.log('Insert data Error: ' + err.message);  } else {console.log("Insert data succeed")}
 			
