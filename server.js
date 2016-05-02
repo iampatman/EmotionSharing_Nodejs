@@ -238,12 +238,14 @@ app.listen(app.get('port'), function() {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
-		var post  = {username: '1', mobilePhone: '13120862631'};
-		var query = client.query('INSERT INTO t_user(username, mobilePhone) values($1, $2)', [post.username, post.mobilePhone])
-
-		console.log(query.sql);
+		var queryText = 'INSERT INTO t_users(username, mobilePhone) VALUES($1, $2) RETURNING id'
 		
-		client.end()
+		client.query(queryText, ['841l14yah', 'test@te.st'], function(err, result) {
+			if(err) //handle error
+		  else {
+			var newlyCreatedUserId = result.rows[0].id;
+		  }
+		});
 	})
 
 
