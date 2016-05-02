@@ -17,7 +17,7 @@ var listUsers = []
 
 var activities = []
 
-var dbConn = null
+var dbClient = null
 
 function arrayContains(array, item){
 	//console.log(array.length)
