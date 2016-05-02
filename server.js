@@ -102,7 +102,7 @@ app.get('/cleardata', function(request, response) {
 //Haijun: Create DB table executions. for internel usage only!!!
 app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
-	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if(err) {
 			console.log('Connection Error: ' + err.message);
 			response.end("0");
@@ -111,9 +111,8 @@ app.get('/setupDB', function(request, response) {
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
 		client.query('CREATE TABLE users (username integer, mobilePhone text)', function(err1, result) {
-		  done();
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); }
+		   { console.error(err1); response.send("Error " + err1); response.end("0")}
 		  else
 		   { console.log('User table created!!!') }
 		});
