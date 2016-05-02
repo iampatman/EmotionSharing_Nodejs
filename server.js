@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var fs = require("fs");
 var pg = require('pg');
-var  = process.env.DATABASE_URL || 'postgres://localhost:5000/';
+var  = process.env.DATABASE_URL;
 //define web server
 var app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -233,7 +233,7 @@ app.listen(app.get('port'), function() {
 
 
 	activities = []
-//haijun: ------------
+	//haijun: ------------
 	//build connection with DB
 	dbConn = new pg.Client(connectionString);
 	dbConn.connect(function(err, client) {
@@ -245,6 +245,7 @@ app.listen(app.get('port'), function() {
     var queryUser = client.query("SELECT * FROM t_user");
     queryUser.on('row', function(row) {
 		listUsers.push(JSON.stringify(row))
+		console.log("User table is loading " + row.username)
     });
 
 	var queryActi = client.query("SELECT * FROM t_activity");
@@ -257,6 +258,7 @@ app.listen(app.get('port'), function() {
 			thought: row.thought
 		}
 		activities.push(activity)
+		console.log("Activity table is loading " + row.username)
     });
 	
 	dbConn.end();
