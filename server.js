@@ -116,7 +116,6 @@ app.get('/setupDB', function(request, response) {
 		  else
 		   { console.log('User table created!!!') }
 		});
-		/*
 		//Create activities table
 		client.query('CREATE TABLE t_activity (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
 		function(err2, result) {
@@ -125,12 +124,11 @@ app.get('/setupDB', function(request, response) {
 		  else
 		   { console.log('activities table created!!!') }
 		});
-		*/
 	});
 	response.end("1");
 }) 
  
- //Haijun: Create DB table executions. for internel usage only!!!
+ //Haijun: Cleanup DB table executions. for internel usage only!!!
 app.get('/cleanupDB', function(request, response) {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if(err) {
