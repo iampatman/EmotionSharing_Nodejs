@@ -2,6 +2,7 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var fs = require("fs");
+var pg = require('pg');
 
 //define web server
 var app = express();
@@ -52,8 +53,6 @@ app.post('/addUser', function (req, res) {
    res.end( JSON.stringify(result));
 })
 
-
-
 app.post('/listUsers', function (req, res) {
 	console.log("listUsers request data: " + JSON.stringify(req.body))
 	var jsonData = JSON.parse(JSON.stringify(req.body))
@@ -100,6 +99,46 @@ app.get('/cleardata', function(request, response) {
 
 });
 
+//Haijun: Create DB table executions. for internel usage only!!!
+app.post('/setupDB', function(request, response)) {
+	//make sure connection could be touched
+	pg.connect(process.env.DATABASE_URL, function(err0, client) {
+		if(err0) {
+			console.log('Connection Error: ' + error.message);
+			response.end("0")
+			return;
+		}
+		console.log('Connected to postgres! Getting schemas...');
+		//Create user table
+		client.query('CREATE TABLE users (username integer, mobilePhone text)', function(err, result) {
+		  done();
+		  if (err)
+		   { console.error(err); response.send("Error " + err); }
+		  else
+		   { console.log('User table created!!!') }
+		});
+		//Create activities table
+		client.query('CREATE TABLE activities (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
+		function(err, result) {
+		  done();
+		  if (err)
+		   { console.error(err); response.send("Error " + err); }
+		  else
+		   { console.log('activities table created!!!') }
+		});
+	});
+	response.end("1")
+}  
+  
+//Haijun: Create DB 
+function db_addUser() {
+	
+}
+
+//Haijun: get a list of all users
+function db_getAllUsers() {
+	
+}
 
 app.post('/checkFiles',function(req,res){
 	fs.stat(__dirname + "/" + "users.json", function(err, stat) {
