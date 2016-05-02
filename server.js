@@ -112,7 +112,7 @@ app.get('/setupDB', function(request, response) {
 		//Create user table
 		client.query('CREATE TABLE t_user (username integer, mobilePhone text)', function(err1, result) {
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); response.end("0")}
+		   { console.error(err1); response.send("Error " + err1); response.end("0"); client.end()}
 		  else
 		   { console.log('User table created!!!') }
 		});
@@ -120,10 +120,11 @@ app.get('/setupDB', function(request, response) {
 		client.query('CREATE TABLE t_activity (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
 		function(err2, result) {
 		  if (err2)
-		   { console.error(err2); response.send("Error " + err2); }
+		   { console.error(err2); response.send("Error " + err2); client.end()}
 		  else
 		   { console.log('activities table created!!!') }
 		});
+		client.end()
 	});
 	response.end("1");
 }) 
@@ -140,17 +141,19 @@ app.get('/cleanupDB', function(request, response) {
 		//Create user table
 		client.query('delete from t_user', function(err1, result) {
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); response.end("0")}
+		   { console.error(err1); response.send("Error " + err1); response.end("0"); client.end()}
 		  else
 		   { console.log('User table deleted!!!') }
 		});
 		//Create activities table
 		client.query('delete from t_activity', function(err2, result) {
 		  if (err2)
-		   { console.error(err2); response.send("Error " + err2); }
+		   { console.error(err2); response.send("Error " + err2); client.end()}
 		  else
 		   { console.log('activities table deleted!!!') }
 		});
+		client.end()
+
 	});
 	response.end("1");
 })
