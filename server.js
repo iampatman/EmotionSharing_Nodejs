@@ -238,7 +238,7 @@ app.listen(app.get('port'), function() {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
-		var queryText = 'INSERT INTO t_users(username, mobilePhone) VALUES($1, $2)'
+		var queryText = 'INSERT INTO t_user(username, mobilePhone) VALUES($1, $2)'
 		
 		client.query(queryText, ['841l14yah', 'test@te.st'], function(err, result) {
 			if(err) {console.log("error!");}//handle error
