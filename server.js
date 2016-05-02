@@ -124,8 +124,8 @@ app.get('/setupDB', function(request, response) {
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
 		   { console.log('activities table created!!!') }
-		});
-		client.end()*/
+		});*/
+		client.end()
 	});
 	response.end("1");
 }) 
@@ -153,8 +153,8 @@ app.get('/cleanupDB', function(request, response) {
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
 		   { console.log('activities table deleted!!!') }
-		});
-		client.end()*/
+		});*/
+		client.end()
 
 	});
 	response.end("1");
