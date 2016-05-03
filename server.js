@@ -232,17 +232,27 @@ app.listen(app.get('port'), function() {
 
 	activities = []
 	//haijun: ------------
-	//build connection with DB
+	//load all data from DB
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
-		var queryText = 'SELECT * FROM t_user'
 		
-		client.query(queryText).on('row', function(row) {
+		client.query('SELECT * FROM t_user').on('row', function(row) {
 			listUsers.push(JSON.stringify(row))
 			console.log(JSON.stringify(row));
 		});
 		
+		client.query("SELECT * FROM t_activity").on('row', function(row) {
+			var activity = {
+				location: {longitude: row.longitude, latitude: row.latitude},
+				time: row.time,
+				username: row.username,
+				emotionId: row.emotionId,
+				thought: row.thought
+			}
+			activities.push(activity)
+			console.log("Activity table is loading " + row.username)
+		});
 	})
 /*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
