@@ -282,7 +282,7 @@ app.listen(app.get('port'), function() {
 	activities = []
 	//haijun: --------------
 	//load all data from DB
-	pg.connect(process.env.DATABASE_URL, function(err, client) {
+	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
 		
@@ -303,6 +303,7 @@ app.listen(app.get('port'), function() {
 			console.log("Activity table is loading " + JSON.stringify(row))
 		});
 		//client.end()
+		done();
 	})
 /*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
