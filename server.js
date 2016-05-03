@@ -110,7 +110,7 @@ app.get('/setupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('CREATE TABLE t_user (username text, mobilePhone text)', function(err1, result) {
+		client.query('CREATE TABLE tt_user (username text, mobilephone text)', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0"); }
 		  else
@@ -118,7 +118,7 @@ app.get('/setupDB', function(request, response) {
 		});
 		
 		//Create activities table
-		client.query('CREATE TABLE t_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
+		client.query('CREATE TABLE tt_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
 		function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
@@ -140,14 +140,14 @@ app.get('/cleanupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('DROP TABLE t_user', function(err1, result) {
+		client.query('DROP TABLE tt_user', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0"); }
 		  else
 		   { console.log('User table deleted!!!') }
 		});
 		//Create activities table
-		client.query('DROP TABLE t_activity', function(err2, result) {
+		client.query('DROP TABLE tt_activity', function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
 		  else
@@ -162,20 +162,68 @@ app.get('/cleanupDB', function(request, response) {
 //Haijun: Create DB 
 function db_addUser(newUser) {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
-  if (err) throw err;
-  console.log('Connected to postgres! Getting schemas...');
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');
+		var queryText = 'INSERT INTO t_user(username, mobilephone) VALUES($1, $2)'
+		
+		client.query(queryText, [newUser.username, newUser.mobilePhone], function(err, result) {
+			if(err) {console.log("error!" + err.message);}//handle error
+		  else {
+			  console.log("DB - new record added " + JSON.stringify(result))
+		  }
+		});
+		client.end()
+	})
+}
 
-  client
-    .query('SELECT table_schema,table_name FROM information_schema.tables;')
-    .on('row', function(row) {
-      console.log(JSON.stringify(row));
-    });
-});
+function db_addActivity(newActivity) {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');
+		var queryText = 'INSERT INTO t_activity(longitude,latitude,time,username,emotionid,thought) 
+						VALUES(newActivity.location.longitude, newActivity.location.latitude, newActivity.time,newActivity.username,newActivity.emotionId,newActivity.thought)'
+		
+		client.query(queryText, [newUser.username, newUser.mobilePhone], function(err, result) {
+			if(err) {console.log("error!" + err.message);}//handle error
+		  else {
+			  console.log("DB - new record added " + JSON.stringify(result))
+		  }
+		});
+		client.end()
+	})
 }
 
 //Haijun: get a list of all users
 function db_getAllUsers() {
-	
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');
+		
+		client.query('SELECT * FROM t_user').on('row', function(row) {
+			listUsers.push(JSON.stringify(row))
+			console.log("User table is loading " + JSON.stringify(row));
+		});
+		clien.end()
+	})
+}
+
+function db_getAllActivities {
+	pg.connect(process.env.DATABASE_URL, function(err, client) {
+		if (err) throw err;
+		console.log('Connected to postgres! Getting schemas...');	
+		client.query("SELECT * FROM t_activity").on('row', function(row) {
+			var activity = {
+				location: {longitude: row.longitude, latitude: row.latitude},
+				time: row.time,
+				username: row.username,
+				emotionId: row.emotionId,
+				thought: row.thought
+			}
+			activities.push(activity)
+			console.log("Activity table is loading " + JSON.stringify(row))
+		});
+		client.end()
+	})
 }
 
 app.post('/checkFiles',function(req,res){
@@ -251,8 +299,9 @@ app.listen(app.get('port'), function() {
 				thought: row.thought
 			}
 			activities.push(activity)
-			console.log("Activity table is loading " + row.username)
+			console.log("Activity table is loading " + JSON.stringify(row))
 		});
+		client.end()
 	})
 /*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
