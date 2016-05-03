@@ -125,7 +125,7 @@ app.get('/setupDB', function(request, response) {
 		  else
 		   { console.log('activities table created!!!') }
 		}); 
-		client.done()
+		done()
 	});
 	response.end("1");
 }) 
@@ -153,7 +153,7 @@ app.get('/cleanupDB', function(request, response) {
 		  else
 		   { console.log('activities table deleted!!!') }
 		});
-		client.done()
+		done()
 
 	});
 	response.end("1");
@@ -172,7 +172,7 @@ function db_addUser(newUser) {
 			  console.log("DB - new record added " + JSON.stringify(result))
 		  }
 		});
-		client.done()
+		done()
 	})
 }
 
@@ -188,7 +188,7 @@ function db_addActivity(newActivity) {
 			  console.log("DB - new record added " + JSON.stringify(result))
 		  }
 		});
-		client.done()
+		done()
 	})
 }
 
@@ -202,7 +202,7 @@ function db_getAllUsers() {
 			listUsers.push(JSON.stringify(row))
 			console.log("User table is loading " + JSON.stringify(row));
 		});
-		clien.done()
+		done()
 	})
 }
 
@@ -221,7 +221,7 @@ function db_getAllActivities() {
 			activities.push(activity)
 			console.log("Activity table is loading " + JSON.stringify(row))
 		});
-		client.done()
+		done()
 	})
 }
 
