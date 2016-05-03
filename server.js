@@ -45,6 +45,7 @@ app.post('/addUser', function (req, res) {
    	console.log("Push new member into list: " + newUser.username)
    	listUsers.push(newUser)
    	writeToFile(__dirname + "/" + "users.json",JSON.stringify(listUsers))
+	db_addUser(newUser) //save to db
    } else {
    	console.log("Member exists: " + newUser.username)
    	result = 0
@@ -52,8 +53,6 @@ app.post('/addUser', function (req, res) {
    console.log('New user list size: ' + listUsers.length)
    res.end( JSON.stringify(result));
 })
-
-
 
 app.post('/listUsers', function (req, res) {
 	console.log("listUsers request data: " + JSON.stringify(req.body))
@@ -76,6 +75,7 @@ app.post('/postActivity',function (req,res){
 	}
 	console.log(JSON.stringify(activity))
 	activities.push(activity)
+	db_addActivity(activity) //save to db
 	result = 1
 	console.log(JSON.stringify(activities))
 	res.end( JSON.stringify(result));
