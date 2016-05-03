@@ -118,7 +118,7 @@ app.get('/setupDB', function(request, response) {
 		});
 		
 		//Create activities table
-		client.query('CREATE TABLE t_activity (longitude text, latitude text, time text, username text, emotionid number, thought text)', 
+		client.query('CREATE TABLE t_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
 		function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
@@ -239,7 +239,7 @@ app.listen(app.get('port'), function() {
 		
 		client.query('SELECT * FROM t_user').on('row', function(row) {
 			listUsers.push(JSON.stringify(row))
-			console.log(JSON.stringify(row));
+			console.log("User table is loading " + JSON.stringify(row));
 		});
 		
 		client.query("SELECT * FROM t_activity").on('row', function(row) {
