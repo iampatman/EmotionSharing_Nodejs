@@ -13,8 +13,6 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
-
-
 var listUsers = []
 
 var activities = []
@@ -104,7 +102,7 @@ app.get('/setupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('CREATE TABLE tt_user (username text, mobilephone text)', function(err1, result) {
+		client.query('CREATE TABLE t_user (username text, mobilephone text)', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0"); done(); return}
 		  else
@@ -112,7 +110,7 @@ app.get('/setupDB', function(request, response) {
 		});
 		
 		//Create activities table
-		client.query('CREATE TABLE tt_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
+		client.query('CREATE TABLE t_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
 		function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); done(); }
@@ -134,14 +132,14 @@ app.get('/cleanupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('DROP TABLE tt_user', function(err1, result) {
+		client.query('DROP TABLE t_user', function(err1, result) {
 		  if (err1)
 		   { console.error(err1); response.send("Error " + err1); response.end("0"); done(); return}
 		  else
 		   { console.log('User table deleted!!!') }
 		});
 		//Create activities table
-		client.query('DROP TABLE tt_activity', function(err2, result) {
+		client.query('DROP TABLE t_activity', function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); done()}
 		  else
@@ -302,8 +300,6 @@ app.listen(app.get('port'), function() {
 		//client.end()
 		done();
 	})
-
-	
 /*
 
 fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
