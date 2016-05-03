@@ -244,7 +244,7 @@ app.listen(app.get('port'), function() {
     var queryUser = dbClient.query("SELECT * FROM t_user");
     queryUser.on('row', function(row) {
 		listUsers.push(JSON.stringify(row))
-		console.log("User table is loading " + row.username)
+		console.log("User table is loading " + JSON.stringify(row))
     });
 	console.log("end load all users")
 	var queryActi = dbClient.query("SELECT * FROM t_activity");
