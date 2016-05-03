@@ -153,7 +153,7 @@ app.get('/cleanupDB', function(request, response) {
 	response.end("1");
 })
 
-//Haijun: Create DB 
+//Haijun: Create DB table
 function db_addUser(newUser) {
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 		if (err) throw err;
