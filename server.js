@@ -93,7 +93,7 @@ app.get('/', function(request, response) {
 	response.send('Hello World!');
 });
 
-//Haijun: Create DB table executions. for internel usage only!!!
+//Haijun:Create DB table executions. for internel usage only!!!
 app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
