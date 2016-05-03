@@ -210,7 +210,7 @@ function db_getAllActivities {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');	
-		client.query("SELECT * FROM t_activity").on('row', function(row) {
+		client.query('SELECT * FROM t_activity').on('row', function(row) {
 			var activity = {
 				location: {longitude: row.longitude, latitude: row.latitude},
 				time: row.time,
