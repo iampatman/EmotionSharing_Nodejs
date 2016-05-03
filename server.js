@@ -98,7 +98,7 @@ app.get('/cleardata', function(request, response) {
 	response.end("1")
 
 });
-
+/*
 //Haijun: Create DB table executions. for internel usage only!!!
 app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
@@ -157,7 +157,7 @@ app.get('/cleanupDB', function(request, response) {
 
 	});
 	response.end("1");
-})
+})*/
 /*
 //Haijun: Create DB 
 function db_addUser(newUser) {
@@ -192,6 +192,7 @@ function db_addActivity(newActivity) {
 	})
 }
 */
+
 /*
 //Haijun: get a list of all users
 function db_getAllUsers() {
