@@ -302,7 +302,7 @@ app.listen(app.get('port'), function() {
 			activities.push(activity)
 			console.log("Activity table is loading " + JSON.stringify(row))
 		});
-		client.end()
+		//client.end()
 	})
 /*
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
