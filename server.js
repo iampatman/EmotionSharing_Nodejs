@@ -76,14 +76,14 @@ app.post('/postActivity',function (req,res){
 	console.log(JSON.stringify(activity))
 	activities.push(activity)
 	result = 1
-	writeToFile(__dirname + "/" + "activities.json",JSON.stringify(listUsers))
-	res.end(JSON.stringify(activities.length))
+	console.log(JSON.stringify(activities))
+	res.end( JSON.stringify(result));
 })
 
 app.post('/listActivities', function(req,res){
 	console.log("List activity request data: " + JSON.stringify(req.body))
 	var jsonData = JSON.parse(JSON.stringify(req.body))
-	console.log("List activity return data size: " + listActivities.length)
+	console.log("List activity return data size: " + activities.length)
 	res.end(JSON.stringify(activities))
 })
 
@@ -92,6 +92,8 @@ app.get('/', function(request, response) {
 	response.send('Hello World!');
 });
 
+/*
+
 app.get('/cleardata', function(request, response) {
 	console.log('Clear data files content')
 	writeToFile(__dirname + "/" + "activities.json","[]")
@@ -99,7 +101,6 @@ app.get('/cleardata', function(request, response) {
 	response.end("1")
 
 });
-
 
 app.post('/checkFiles',function(req,res){
 	fs.stat(__dirname + "/" + "users.json", function(err, stat) {
@@ -123,6 +124,8 @@ app.post('/checkFiles',function(req,res){
 	res.end("1")
 })
 
+*/
+
 
 function writeToFile(filename, data){
 	fs.writeFile(filename, data,  function(err) {
@@ -144,19 +147,19 @@ function writeToFile(filename, data){
 //Run web server
 
 app.listen(app.get('port'), function() {
-	console.log('Node app is running on port', app.get('port'));
-	console.log('Start reading user data file')
-	fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+	
+
+	console.log('Node app is running on port: ', app.get('port'));
+
+	
+/*
+
+fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+		console.log('Start reading user data file')
 		console.log( JSON.parse(data) );
 		var objs = JSON.parse(data)
 		listUsers = objs
-		console.log('Initialized users list: ' + listUsers.length)
 	});
-	console.log('Start reading activities data file')
-
-
-	activities = []
-/*
 	fs.readFile( __dirname + "/" + "activities.json", 'utf8', function (err, data) {
 		console.log( data );
 		var objs = JSON.parse(data)
