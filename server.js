@@ -49,14 +49,14 @@ app.post('/addUser', function (req, res) {
    	result = 0
    }
    console.log('New user list size: ' + listUsers.length)
-   res.end( JSON.stringify(result));
+   res.end( JSON.stringify({"result": result}));
 })
 
 app.post('/listUsers', function (req, res) {
 	console.log("listUsers request data: " + JSON.stringify(req.body))
 	var jsonData = JSON.parse(JSON.stringify(req.body))
 	console.log("listUsers return data size: " + listUsers.length)
-	res.end( JSON.stringify(listUsers));
+	res.end(JSON.stringify({list: JSON.stringify(listUsers)}));
 })
 
 app.post('/postActivity',function (req,res){
@@ -76,14 +76,15 @@ app.post('/postActivity',function (req,res){
 	db_addActivity(activity) //save to db
 	result = 1
 	console.log(JSON.stringify(activities))
-	res.end( JSON.stringify(result));
+   res.end(JSON.stringify({"result": result}));
 })
 
 app.post('/listActivities', function(req,res){
 	console.log("List activity request data: " + JSON.stringify(req.body))
 	var jsonData = JSON.parse(JSON.stringify(req.body))
 	console.log("List activity return data size: " + activities.length)
-	res.end(JSON.stringify(activities))
+	//warping json code
+	res.end(JSON.stringify({list: JSON.stringify(activities)}))
 })
 
 app.get('/', function(request, response) {
@@ -104,7 +105,7 @@ app.get('/setupDB', function(request, response) {
 		//Create user table
 		client.query('CREATE TABLE t_user (username text, mobilephone text)', function(err1, result) {
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); response.end("0"); done(); return}
+		   { console.error(err1); response.send("Error " + err1); 	response.end(JSON.stringify({result: 0})); done(); return}
 		  else
 		   { console.log('User table created!!!') }
 		});
@@ -119,22 +120,22 @@ app.get('/setupDB', function(request, response) {
 		}); 
 		done()
 	});
-	response.end("1");
+	response.end(JSON.stringify({"result": 1}));
 }) 
  
- //Haijun: Cleanup DB table executions. for internel usage only!!!
+//Haijun: Cleanup DB table executions. for internel usage only!!!
 app.get('/cleanupDB', function(request, response) {
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 		if(err) {
 			console.log('Connection Error: ' + err.message);
-			response.end("0");
+			response.end(JSON.stringify({result: 0}));
 			return;
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
 		client.query('DROP TABLE t_user', function(err1, result) {
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); response.end("0"); done(); return}
+		   { console.error(err1); response.send("Error " + err1); 	response.end(JSON.stringify({result: 0})); done(); return}
 		  else
 		   { console.log('User table deleted!!!') }
 		});
@@ -148,7 +149,7 @@ app.get('/cleanupDB', function(request, response) {
 		done()
 
 	});
-	response.end("1");
+	response.end(JSON.stringify({"result": 1}));
 })
 
 //Haijun: Create DB table
