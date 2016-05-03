@@ -278,7 +278,7 @@ app.listen(app.get('port'), function() {
 
 
 	activities = []
-	//haijun: ------------
+	//haijun: --------------
 	//load all data from DB
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
