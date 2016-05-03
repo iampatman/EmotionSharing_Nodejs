@@ -158,7 +158,7 @@ app.get('/cleanupDB', function(request, response) {
 	});
 	response.end("1");
 })
-
+/*
 //Haijun: Create DB 
 function db_addUser(newUser) {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
@@ -191,7 +191,8 @@ function db_addActivity(newActivity) {
 		client.end()
 	})
 }
-
+*/
+/*
 //Haijun: get a list of all users
 function db_getAllUsers() {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
@@ -224,7 +225,7 @@ function db_getAllActivities() {
 		client.end()
 	})
 }
-
+*/
 app.post('/checkFiles',function(req,res){
 	fs.stat(__dirname + "/" + "users.json", function(err, stat) {
 		if(err == null) {
