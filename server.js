@@ -118,7 +118,7 @@ app.get('/setupDB', function(request, response) {
 		});
 		
 		//Create activities table
-		client.query('CREATE TABLE t_activity (longitude number, latitude number, time text, username text, emotionid number, thought text)', 
+		client.query('CREATE TABLE t_activity (longitude text, latitude text, time text, username text, emotionid number, thought text)', 
 		function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); }
