@@ -206,7 +206,7 @@ function db_getAllUsers() {
 	})
 }
 
-function db_getAllActivities {
+function db_getAllActivities() {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');	
