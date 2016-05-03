@@ -180,10 +180,9 @@ function db_addActivity(newActivity) {
 	pg.connect(process.env.DATABASE_URL, function(err, client) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');
-		var queryText = 'INSERT INTO t_activity(longitude,latitude,time,username,emotionid,thought) 
-						VALUES(newActivity.location.longitude, newActivity.location.latitude, newActivity.time,newActivity.username,newActivity.emotionId,newActivity.thought)'
+		var queryText = 'INSERT INTO t_activity(longitude,latitude,time,username,emotionid,thought) VALUES($1, $2, $3, $4, $5, $6)'
 		
-		client.query(queryText, [newUser.username, newUser.mobilePhone], function(err, result) {
+		client.query(queryText, [newActivity.location.longitude,newActivity.location.latitude,newActivity.time,newActivity.username,newActivity.emotionId,newActivity.thought], function(err, result) {
 			if(err) {console.log("error!" + err.message);}//handle error
 		  else {
 			  console.log("DB - new record added " + JSON.stringify(result))
