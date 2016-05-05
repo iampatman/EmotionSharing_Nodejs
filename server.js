@@ -3,7 +3,7 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var fs = require("fs");
 var pg = require('pg');
-var connStr = process.env.DATABASE_URL;
+
 //define web server
 var app = express();
 app.set('port', (process.env.PORT || 5000));
@@ -16,8 +16,6 @@ app.use(bodyParser.json());
 var listUsers = []
 
 var activities = []
-
-var dbClient = null
 
 function arrayContains(array, item){
 	//console.log(array.length)
@@ -45,19 +43,20 @@ app.post('/addUser', function (req, res) {
    	console.log("Push new member into list: " + newUser.username)
    	listUsers.push(newUser)
    	writeToFile(__dirname + "/" + "users.json",JSON.stringify(listUsers))
+	db_addUser(newUser) //save to db
    } else {
    	console.log("Member exists: " + newUser.username)
    	result = 0
    }
    console.log('New user list size: ' + listUsers.length)
-   res.end( JSON.stringify(result));
+   res.end( JSON.stringify({"result": result}));
 })
 
 app.post('/listUsers', function (req, res) {
 	console.log("listUsers request data: " + JSON.stringify(req.body))
 	var jsonData = JSON.parse(JSON.stringify(req.body))
 	console.log("listUsers return data size: " + listUsers.length)
-	res.end( JSON.stringify(listUsers));
+	res.end(JSON.stringify({list: JSON.stringify(listUsers)}));
 })
 
 app.post('/postActivity',function (req,res){
@@ -74,16 +73,18 @@ app.post('/postActivity',function (req,res){
 	}
 	console.log(JSON.stringify(activity))
 	activities.push(activity)
+	db_addActivity(activity) //save to db
 	result = 1
-	writeToFile(__dirname + "/" + "activities.json",JSON.stringify(listUsers))
-	res.end(JSON.stringify(activities.length))
+	console.log(JSON.stringify(activities))
+   res.end(JSON.stringify({"result": result}));
 })
 
 app.post('/listActivities', function(req,res){
 	console.log("List activity request data: " + JSON.stringify(req.body))
 	var jsonData = JSON.parse(JSON.stringify(req.body))
-	console.log("List activity return data size: " + listActivities.length)
-	res.end(JSON.stringify(activities))
+	console.log("List activity return data size: " + activities.length)
+	//warping json code
+	res.end(JSON.stringify({list: JSON.stringify(activities)}))
 })
 
 app.get('/', function(request, response) {
@@ -91,15 +92,7 @@ app.get('/', function(request, response) {
 	response.send('Hello World!');
 });
 
-app.get('/cleardata', function(request, response) {
-	console.log('Clear data files content')
-	writeToFile(__dirname + "/" + "activities.json","[]")
-	writeToFile(__dirname + "/" + "users.json","[]")
-	response.end("1")
-
-});
-
-//Haijun: Create DB table executions. for internel usage only!!!
+//Haijun:Create DB table executions. for internel usage only!!!
 app.get('/setupDB', function(request, response) {
 	//make sure connection could be touched
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -110,15 +103,15 @@ app.get('/setupDB', function(request, response) {
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('CREATE TABLE tt_user (username text, mobilephone text)', function(err1, result) {
+		client.query('CREATE TABLE t_user (username text, mobilephone text)', function(err1, result) {
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); response.end("0"); done(); return}
+		   { console.error(err1); response.send("Error " + err1); 	response.end(JSON.stringify({result: 0})); done(); return}
 		  else
 		   { console.log('User table created!!!') }
 		});
 		
 		//Create activities table
-		client.query('CREATE TABLE tt_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
+		client.query('CREATE TABLE t_activity (longitude text, latitude text, time text, username text, emotionid text, thought text)', 
 		function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); done(); }
@@ -127,27 +120,27 @@ app.get('/setupDB', function(request, response) {
 		}); 
 		done()
 	});
-	response.end("1");
+	response.end(JSON.stringify({"result": 1}));
 }) 
  
- //Haijun: Cleanup DB table executions. for internel usage only!!!
+//Haijun: Cleanup DB table executions. for internel usage only!!!
 app.get('/cleanupDB', function(request, response) {
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 		if(err) {
 			console.log('Connection Error: ' + err.message);
-			response.end("0");
+			response.end(JSON.stringify({result: 0}));
 			return;
 		}
 		console.log('Connected to postgres! Getting schemas...');
 		//Create user table
-		client.query('DROP TABLE tt_user', function(err1, result) {
+		client.query('DROP TABLE t_user', function(err1, result) {
 		  if (err1)
-		   { console.error(err1); response.send("Error " + err1); response.end("0"); done(); return}
+		   { console.error(err1); response.send("Error " + err1); 	response.end(JSON.stringify({result: 0})); done(); return}
 		  else
 		   { console.log('User table deleted!!!') }
 		});
 		//Create activities table
-		client.query('DROP TABLE tt_activity', function(err2, result) {
+		client.query('DROP TABLE t_activity', function(err2, result) {
 		  if (err2)
 		   { console.error(err2); response.send("Error " + err2); done()}
 		  else
@@ -156,10 +149,10 @@ app.get('/cleanupDB', function(request, response) {
 		done()
 
 	});
-	response.end("1");
+	response.end(JSON.stringify({"result": 1}));
 })
 
-//Haijun: Create DB 
+//Haijun: Create DB table
 function db_addUser(newUser) {
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 		if (err) throw err;
@@ -224,6 +217,15 @@ function db_getAllActivities() {
 		done()
 	})
 }
+/*
+
+app.get('/cleardata', function(request, response) {
+	console.log('Clear data files content')
+	writeToFile(__dirname + "/" + "activities.json","[]")
+	writeToFile(__dirname + "/" + "users.json","[]")
+	response.end("1")
+
+});
 
 app.post('/checkFiles',function(req,res){
 	fs.stat(__dirname + "/" + "users.json", function(err, stat) {
@@ -247,6 +249,8 @@ app.post('/checkFiles',function(req,res){
 	res.end("1")
 })
 
+*/
+
 
 function writeToFile(filename, data){
 	fs.writeFile(filename, data,  function(err) {
@@ -263,21 +267,15 @@ function writeToFile(filename, data){
 	});
 }
 
+
+
 //Run web server
 
 app.listen(app.get('port'), function() {
-	console.log('Node app is running on port', app.get('port'));
-	console.log('Start reading user data file')
-	fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-		console.log( JSON.parse(data) );
-		var objs = JSON.parse(data)
-		listUsers = objs
-		console.log('Initialized users list: ' + listUsers.length)
-	});
-	console.log('Start reading activities data file')
+	
 
-
-	activities = []
+	console.log('Node app is running on port: ', app.get('port'));
+	
 	//haijun: --------------
 	//load all data from DB
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
@@ -304,21 +302,13 @@ app.listen(app.get('port'), function() {
 		done();
 	})
 /*
-	pg.connect(process.env.DATABASE_URL, function(err, client) {
-		if (err) throw err;
-		console.log('Connected to postgres! Getting schemas...');
-		var queryText = 'INSERT INTO t_user(username, mobilePhone) VALUES($1, $2)'
-		
-		client.query(queryText, ['841l14yah', 'test@te.st'], function(err, result) {
-			if(err) {console.log("error!");}//handle error
-		  else {
-			var newlyCreatedUserId = 0
-		  }
-		});
-	})*/
 
-
-/*
+fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
+		console.log('Start reading user data file')
+		console.log( JSON.parse(data) );
+		var objs = JSON.parse(data)
+		listUsers = objs
+	});
 	fs.readFile( __dirname + "/" + "activities.json", 'utf8', function (err, data) {
 		console.log( data );
 		var objs = JSON.parse(data)
