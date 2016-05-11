@@ -53,7 +53,6 @@ app.post('/addUser', function (req, res) {
 		db_addUser(newUser) //save to db
 	} 
 	console.log('New user list size: ' + listUsers.length)
-	console.log(JSON.stringify(listUsers))
 	res.end(JSON.stringify({"result": result}));
 })
 
@@ -70,15 +69,6 @@ app.post('/postActivity',function (req,res){
 	console.log("postActivity request data: " + JSON.stringify(req.body))
 	var result = 0
 	var jsonData = JSON.parse(JSON.stringify(req.body))
-	var joint_mobilephone = 0
-	//Haijun:
-	//Join the mobilephone from user table in memory
-	listUsers.forEach(function(value, index) {
-		if(value.username == jsonData.username) {
-			joint_mobilephone = value.mobilePhone
-		}
-	});
-
 	//res.end( JSON.stringify(listUsers));
 	var activity = {
 		longitude: jsonData.longitude,
@@ -86,8 +76,7 @@ app.post('/postActivity',function (req,res){
 		time: new Date(),
 		username: jsonData.username,
 		emotionId: jsonData.emotionId,
-		thought: jsonData.thought,
-		mobilephone: joint_mobilephone//activity input already referrered to another table of t_user, so put it as null
+		thought: jsonData.thought
 	}
 	console.log(JSON.stringify(activity))
 	activities.push(activity)
@@ -222,14 +211,13 @@ function db_getAllActivities() {
 	pg.connect(process.env.DATABASE_URL, function(err, client, done) {
 		if (err) throw err;
 		console.log('Connected to postgres! Getting schemas...');	
-		client.query('SELECT DISTINCT ON (username) longitude,latitude,time,username,emotionid,thought,mobilephone FROM t_activity').on('row', function(row) {
+		client.query('SELECT DISTINCT ON (username) * FROM t_activity').on('row', function(row) {
 			var activity = {
 				location: {longitude: row.longitude, latitude: row.latitude},
 				time: row.time,
 				username: row.username,
 				emotionId: row.emotionid,
-				thought: row.thought,
-				mobilephone: row.mobilephone
+				thought: row.thought
 			}
 			activities.push(activity)
 			console.log("Activity table is loading " + JSON.stringify(row))
@@ -266,15 +254,14 @@ app.listen(app.get('port'), function() {
 			console.log("User table loading " + JSON.stringify(row));
 		});
 		
-		client.query('SELECT DISTINCT ON (t_activity.username) longitude,latitude,time,t_activity.username,emotionid,thought,mobilephone FROM t_activity INNER JOIN t_user ON t_activity.username = t_user.username').on('row', function(row) {
+		client.query('SELECT DISTINCT ON (username) * FROM t_activity').on('row', function(row) {
 			var activity = {
 				longitude: Number(row.longitude), 
 				latitude: Number(row.latitude),
 				time: row.time,
 				username: row.username,
 				emotionId: row.emotionid,
-				thought: row.thought,
-				mobilephone: row.mobilephone
+				thought: row.thought
 			}
 			activities.push(activity)
 			console.log("Activity table loading " + JSON.stringify(row))
